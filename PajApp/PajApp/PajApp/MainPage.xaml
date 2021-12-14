@@ -3,9 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PajApp.MainPage">
 
-    <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
+    <StackLayout BackgroundColor="white">
+        <Frame BackgroundColor="#ffb200" Padding="24" CornerRadius="0">
+            <Label HorizontalTextAlignment="Center" FontSize="36">
+                <Label.FormattedText>
+                <FormattedString>
+                    <FormattedString.Spans>
+                            <Span Text="PAJACERKA " TextColor="#d75406" FontAttributes="Bold" FontSize="36"/>
+                            <Span Text="RACING" TextColor="#0075da" FontAttributes="Bold" FontSize="36"/>
+                    </FormattedString.Spans>
+                </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
         </Frame>
         <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
         <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
@@ -19,6 +29,7 @@
                 </FormattedString>
             </Label.FormattedText>
         </Label>
+        <Entry Keyboard="Default" Placeholder="wpisz login"/>
     </StackLayout>
 
 </ContentPage>
