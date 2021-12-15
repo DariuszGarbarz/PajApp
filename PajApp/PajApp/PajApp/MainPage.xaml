@@ -3,33 +3,43 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PajApp.MainPage">
 
-    <StackLayout BackgroundColor="white">
+    <StackLayout BackgroundColor="#ffb200">
         <Frame BackgroundColor="#ffb200" Padding="24" CornerRadius="0">
             <Label HorizontalTextAlignment="Center" FontSize="36">
                 <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
+                    <FormattedString>
+                        <FormattedString.Spans>
                             <Span Text="PAJACERKA " TextColor="#d75406" FontAttributes="Bold" FontSize="36"/>
                             <Span Text="RACING" TextColor="#0075da" FontAttributes="Bold" FontSize="36"/>
-                    </FormattedString.Spans>
-                </FormattedString>
+                        </FormattedString.Spans>
+                    </FormattedString>
                 </Label.FormattedText>
             </Label>
-
         </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-        <Entry Keyboard="Default" Placeholder="wpisz login"/>
+        <Grid BackgroundColor="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <StackLayout Grid.Column="0">
+                <Button Text="HOME"/>
+                <Button Text="STATS"/>
+                <Button Text="ENDU PLANNER"/>
+                <Button Text="ENDU LIVE"/>
+                <Button Text="STINT PLANNER"/>
+                <Button Text="SEASON PLANNER"/>
+                <Button Text="SETUP MANAGER"/>
+            </StackLayout>
+
+            <StackLayout Grid.Column="1">
+                <Label Text="Home page placeholder"/>
+            </StackLayout>
+        </Grid>
+        <StackLayout BackgroundColor="#ffb200" >
+            
+            
+        </StackLayout>
     </StackLayout>
+
 
 </ContentPage>
