@@ -4,8 +4,9 @@
              x:Class="PajApp.MainPage">
 
     <StackLayout BackgroundColor="#ffb200">
-        <Frame BackgroundColor="#ffb200" Padding="24" CornerRadius="0">
-            <Label HorizontalTextAlignment="Center" FontSize="36">
+        <StackLayout BackgroundColor="#ffb200" Padding="24" Orientation="Horizontal" HorizontalOptions="Center">
+            <Image x:Name="pajacLogo" WidthRequest="100" HeightRequest="100"/>
+            <Label HorizontalTextAlignment="Center" FontSize="36" VerticalTextAlignment="Center">
                 <Label.FormattedText>
                     <FormattedString>
                         <FormattedString.Spans>
@@ -15,7 +16,7 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
-        </Frame>
+        </StackLayout>
         <Grid BackgroundColor="White">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

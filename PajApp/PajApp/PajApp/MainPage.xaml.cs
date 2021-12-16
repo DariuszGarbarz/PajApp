@@ -13,6 +13,7 @@ namespace PajApp
         public MainPage()
         {
             InitializeComponent();
+            pajacLogo.Source = ImageSource.FromResource("PajApp.Images.pajacerka-1.gif");
             DisplayAlert("DATA GATHERING", "You need to be logged in on iRacing Website to gather statistics data.", "OK");
         }
     }
