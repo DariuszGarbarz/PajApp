@@ -1,46 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PajApp.MainPage">
 
-    <StackLayout BackgroundColor="#ffb200">
-        <StackLayout BackgroundColor="#ffb200" Padding="24" Orientation="Horizontal" HorizontalOptions="Center">
-            <Image x:Name="pajacLogo" WidthRequest="100" HeightRequest="100"/>
-            <Label HorizontalTextAlignment="Center" FontSize="36" VerticalTextAlignment="Center">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <FormattedString.Spans>
-                            <Span Text="PAJACERKA " TextColor="#d75406" FontAttributes="Bold" FontSize="36"/>
-                            <Span Text="RACING" TextColor="#0075da" FontAttributes="Bold" FontSize="36"/>
-                        </FormattedString.Spans>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-        </StackLayout>
-        <Grid BackgroundColor="White">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <StackLayout Grid.Column="0">
-                <Button Text="HOME"/>
-                <Button Text="STATS"/>
-                <Button Text="ENDU PLANNER"/>
-                <Button Text="ENDU LIVE"/>
-                <Button Text="STINT PLANNER"/>
-                <Button Text="SEASON PLANNER"/>
-                <Button Text="SETUP MANAGER"/>
+    <MasterDetailPage.Master>
+        <ContentPage Title="Menu">
+            <StackLayout BackgroundColor="White">
+                <StackLayout BackgroundColor="#ffb200" Padding="24" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Image x:Name="pajacLogo" WidthRequest="100" HeightRequest="100"/>
+                    <Label HorizontalTextAlignment="Center" FontSize="36" VerticalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <FormattedString.Spans>
+                                    <Span Text="PAJACZA " TextColor="#d75406" FontAttributes="Bold" FontSize="30"/>
+                                    <Span Text="APPKA" TextColor="#0075da" FontAttributes="Bold" FontSize="30"/>
+                                </FormattedString.Spans>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
+                
+                <ListView VerticalOptions="FillAndExpand"
+                          BackgroundColor="White"
+                          ItemSelected="MenuItemSelected"
+                          x:Name="menuPagesListView">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Margin="14,0,0,0">
+                                    <Label Text="{Binding Title}"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                </ListView>
             </StackLayout>
-
-            <StackLayout Grid.Column="1">
-                <Label Text="Home page placeholder"/>
-            </StackLayout>
-        </Grid>
-        <StackLayout BackgroundColor="#ffb200" >
+        </ContentPage>
+    </MasterDetailPage.Master>
+    <MasterDetailPage.Detail>
+        <NavigationPage>
             
-            
-        </StackLayout>
-    </StackLayout>
+        </NavigationPage>
+    </MasterDetailPage.Detail>
 
 
-</ContentPage>
+</MasterDetailPage>
