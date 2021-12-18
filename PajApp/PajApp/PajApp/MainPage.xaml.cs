@@ -16,7 +16,7 @@ namespace PajApp
         {
             InitializeComponent();
             MenuPages = menuPages;
-            MasterBehavior = MasterBehavior.Split;
+            MasterBehavior = MasterBehavior.Popover;
             this.Detail = new NavigationPage((Page)Activator.CreateInstance(menuPages[0].PageType));
             this.IsPresented = false;
             menuPagesListView.ItemsSource = MenuPages;
