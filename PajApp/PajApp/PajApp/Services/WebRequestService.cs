@@ -4,10 +4,14 @@ using System.Text;
 using System.Net.Http;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
+using PajApp.Models;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace PajApp.Services
 {
-    class WebRequestService
+    public class WebRequestService
     {
         private HttpClient _httpClient;
         private string _userName;
@@ -45,6 +49,7 @@ namespace PajApp.Services
             }
 
             return false;
+
         }
 
         /// <summary>
@@ -62,6 +67,67 @@ namespace PajApp.Services
 
             var safetyRating = doc.QuerySelector("body > table > tr:nth-child(8) > td:nth-child(2) > div > table > tr:nth-child(2) > td > div > div:nth-child(20) > div:nth-child(2) > div > div > div:nth-child(4) > div:nth-child(1)");
             //document.querySelector("body > table > tbody > tr:nth-child(8) > td:nth-child(2) > div > table > tbody > tr:nth-child(2) > td > div > div:nth-child(20) > div:nth-child(2) > div > div > div:nth-child(4) > div:nth-child(1)")
+        }
+
+        /// <summary>
+        /// Keepeing api URLs so i would not forget them through digging through iracing network communication
+        /// </summary>
+        private static void apiUrlKeeper()
+        {
+            //Get Driver stats by custId friends, gives back json response
+            string getDriverStats = "https://members.iracing.com/memberstats/member/GetDriverStats?search=null&friend=360858&watched=-1&recent=-1&country=null&category=2&classlow=-1&classhigh=-1&iratinglow=-1&iratinghigh=-1&ttratinglow=-1&ttratinghigh=-1&avgstartlow=-1&avgstarthigh=-1&avgfinishlow=-1&avgfinishhigh=-1&avgpointslow=-1&avgpointshigh=-1&avgincidentslow=-1&avgincidentshigh=-1&custid=360858&lowerbound=1&upperbound=25&sort=irating&order=desc&active=1";
+        }
+
+        /// <summary>
+        /// Get drivers stats based on custId friends, picks data for DriverModel. Saves all driver in json file
+        /// </summary>
+        /// <param name="custId">Customer Id for friends list</param>
+        /// <returns>List of Drivers</returns>
+        public List<DriverModel> GetDriverStats(int custId)
+        {
+            string getDriverStats = $"https://members.iracing.com/memberstats/member/GetDriverStats?search=null&friend={custId}&watched=-1&recent=-1&country=null&category=2&classlow=-1&classhigh=-1&iratinglow=-1&iratinghigh=-1&ttratinglow=-1&ttratinghigh=-1&avgstartlow=-1&avgstarthigh=-1&avgfinishlow=-1&avgfinishhigh=-1&avgpointslow=-1&avgpointshigh=-1&avgincidentslow=-1&avgincidentshigh=-1&custid={custId}&lowerbound=1&upperbound=25&sort=irating&order=desc&active=1";
+
+            HttpResponseMessage response2 = _httpClient.GetAsync(getDriverStats).Result;
+            var getResultsJson = response2.Content.ReadAsStringAsync().Result;
+
+            JObject o = JObject.Parse(getResultsJson);
+
+            var result = new List<DriverModel>();
+
+            try
+            {
+                var numberOfDrivers = int.Parse(o["d"]["20"].ToString());
+
+                for (int i = 1; i < numberOfDrivers; i++)
+                {
+                    var driver = new DriverModel();
+                    
+                    driver.CustId = int.Parse(o["d"]["r"][i]["34"].ToString());
+                    driver.DisplayName = o["d"]["r"][i]["32"].ToString();
+                    driver.SafetyLetter = char.Parse(o["d"]["r"][i]["39"].ToString());
+                    driver.SafetyRating = o["d"]["r"][i]["16"].ToString();
+                    driver.IRating = int.Parse(o["d"]["r"][i]["3"].ToString());
+
+                    result.Add(driver);
+                }
+            }
+            catch { }
+
+            try
+            {
+                var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+                var filePath = System.IO.Path.Combine(basePath, "driversSerialized.json");
+
+                string driversSerialized = JsonConvert.SerializeObject(result);
+                File.WriteAllText(filePath, driversSerialized);
+            }
+
+            catch
+            {
+                //UnauthorizedAccessException
+            }
+
+            return result;
         }
 
     }
