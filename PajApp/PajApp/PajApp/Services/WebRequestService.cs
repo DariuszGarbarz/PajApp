@@ -72,11 +72,15 @@ namespace PajApp.Services
         /// <summary>
         /// Keepeing api URLs so i would not forget them through digging through iracing network communication
         /// </summary>
-        private static void apiUrlKeeper()
-        {
+       // private static void ApiUrlKeeper()
+       // {
+            //get season schedule, a lot of info, could be used for seasopn planner
+            //string getSeason = "https://members.iracing.com/membersite/member/GetSeasons"
+            //gets all races and practices, can use it to pick owned cars and tracks
+            //string getSeriesResult = "https://members.iracing.com/memberstats/member/SearchSeriesResults?custid=360858&seasonyear=2022&seasonquarter=1"
             //Get Driver stats by custId friends, gives back json response
-            string getDriverStats = "https://members.iracing.com/memberstats/member/GetDriverStats?search=null&friend=360858&watched=-1&recent=-1&country=null&category=2&classlow=-1&classhigh=-1&iratinglow=-1&iratinghigh=-1&ttratinglow=-1&ttratinghigh=-1&avgstartlow=-1&avgstarthigh=-1&avgfinishlow=-1&avgfinishhigh=-1&avgpointslow=-1&avgpointshigh=-1&avgincidentslow=-1&avgincidentshigh=-1&custid=360858&lowerbound=1&upperbound=25&sort=irating&order=desc&active=1";
-        }
+            //string getDriverStats = "https://members.iracing.com/memberstats/member/GetDriverStats?search=null&friend=360858&watched=-1&recent=-1&country=null&category=2&classlow=-1&classhigh=-1&iratinglow=-1&iratinghigh=-1&ttratinglow=-1&ttratinghigh=-1&avgstartlow=-1&avgstarthigh=-1&avgfinishlow=-1&avgfinishhigh=-1&avgpointslow=-1&avgpointshigh=-1&avgincidentslow=-1&avgincidentshigh=-1&custid=360858&lowerbound=1&upperbound=25&sort=irating&order=desc&active=1";
+       // }
 
         /// <summary>
         /// Get drivers stats based on custId friends, picks data for DriverModel. Saves all driver in json file
@@ -128,6 +132,37 @@ namespace PajApp.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Get user data and stores it in json file for later use.
+        /// </summary>
+        /// <returns>data in DriverModel</returns>
+        public MemberModel GetMemberStats()
+        {
+            string getMemberStats = "https://members.iracing.com/membersite/member/GetMember";
+
+            HttpResponseMessage response = _httpClient.GetAsync(getMemberStats).Result;
+            var getResultsJson = response.Content.ReadAsStringAsync().Result;
+
+            try
+            {
+                var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+                var filePath = System.IO.Path.Combine(basePath, "memberSerialized.json");
+
+        
+                File.WriteAllText(filePath, getResultsJson);
+            }
+
+            catch
+            {
+                //UnauthorizedAccessException
+            }
+
+            var memberResult = JsonConvert.DeserializeObject<MemberModel>(getResultsJson);
+
+            return memberResult;
+
         }
 
     }
