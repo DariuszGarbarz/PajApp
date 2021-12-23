@@ -53,20 +53,20 @@ namespace PajApp.Services
         }
 
         /// <summary>
-        /// Should scrap driver career from CareerStats page but for now i dont know how to load dynamic js website by httpclient. Propably i should use Selenium instead.
+        /// Scraping javascript that contains info about owned content - "var ownedcontentlisting", For now i have no idea how to extract this data through javascript to json.
         /// </summary>
-        /// <param name="custId"> Customer Id</param>
-        public void GetDriverCareerScraper(int custId)
+        /// 
+        public void GetOwnedContentListing()
         {
-            var driverCareerUrl = $"https://members.iracing.com/membersite/member/CareerStats.do?custid={custId}";
+            var driverCareerUrl = $"https://members.iracing.com/membersite/member/Tracks.do?forceload=owned";
             HttpResponseMessage body = _httpClient.GetAsync(driverCareerUrl).Result;
             var getBody = body.Content.ReadAsStringAsync().Result;
                      
             var doc = new HtmlDocument();
             doc.LoadHtml(getBody);
 
-            var safetyRating = doc.QuerySelector("body > table > tr:nth-child(8) > td:nth-child(2) > div > table > tr:nth-child(2) > td > div > div:nth-child(20) > div:nth-child(2) > div > div > div:nth-child(4) > div:nth-child(1)");
-            //document.querySelector("body > table > tbody > tr:nth-child(8) > td:nth-child(2) > div > table > tbody > tr:nth-child(2) > td > div > div:nth-child(20) > div:nth-child(2) > div > div > div:nth-child(4) > div:nth-child(1)")
+            var ownedContentListing = doc.QuerySelector("head > script:nth-child(40)");
+    
         }
 
         /// <summary>
