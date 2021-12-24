@@ -4,6 +4,9 @@ using System.Text;
 
 namespace PajApp.Models
 {
+   /// <summary>
+   /// Basic Driver model to store data about teammates
+   /// </summary>
     public class DriverModel
     {
         public int Id { get; set; }

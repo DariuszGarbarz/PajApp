@@ -53,30 +53,34 @@ namespace PajApp.Services
         }
 
         /// <summary>
-        /// Should scrap driver career from CareerStats page but for now i dont know how to load dynamic js website by httpclient. Propably i should use Selenium instead.
+        /// Scraping javascript that contains info about owned content - "var ownedcontentlisting", For now i have no idea how to extract this data through javascript to json.
         /// </summary>
-        /// <param name="custId"> Customer Id</param>
-        public void GetDriverCareerScraper(int custId)
+        /// 
+        public void GetOwnedContentListing()
         {
-            var driverCareerUrl = $"https://members.iracing.com/membersite/member/CareerStats.do?custid={custId}";
+            var driverCareerUrl = $"https://members.iracing.com/membersite/member/Tracks.do?forceload=owned";
             HttpResponseMessage body = _httpClient.GetAsync(driverCareerUrl).Result;
             var getBody = body.Content.ReadAsStringAsync().Result;
                      
             var doc = new HtmlDocument();
             doc.LoadHtml(getBody);
 
-            var safetyRating = doc.QuerySelector("body > table > tr:nth-child(8) > td:nth-child(2) > div > table > tr:nth-child(2) > td > div > div:nth-child(20) > div:nth-child(2) > div > div > div:nth-child(4) > div:nth-child(1)");
-            //document.querySelector("body > table > tbody > tr:nth-child(8) > td:nth-child(2) > div > table > tbody > tr:nth-child(2) > td > div > div:nth-child(20) > div:nth-child(2) > div > div > div:nth-child(4) > div:nth-child(1)")
+            var ownedContentListing = doc.QuerySelector("head > script:nth-child(40)");
+    
         }
 
         /// <summary>
         /// Keepeing api URLs so i would not forget them through digging through iracing network communication
         /// </summary>
-        private static void apiUrlKeeper()
-        {
+       // private static void ApiUrlKeeper()
+       // {
+            //get season schedule, a lot of info, could be used for seasopn planner
+            //string getSeason = "https://members.iracing.com/membersite/member/GetSeasons"
+            //gets all races and practices, can use it to pick owned cars and tracks
+            //string getSeriesResult = "https://members.iracing.com/memberstats/member/SearchSeriesResults?custid=360858&seasonyear=2022&seasonquarter=1"
             //Get Driver stats by custId friends, gives back json response
-            string getDriverStats = "https://members.iracing.com/memberstats/member/GetDriverStats?search=null&friend=360858&watched=-1&recent=-1&country=null&category=2&classlow=-1&classhigh=-1&iratinglow=-1&iratinghigh=-1&ttratinglow=-1&ttratinghigh=-1&avgstartlow=-1&avgstarthigh=-1&avgfinishlow=-1&avgfinishhigh=-1&avgpointslow=-1&avgpointshigh=-1&avgincidentslow=-1&avgincidentshigh=-1&custid=360858&lowerbound=1&upperbound=25&sort=irating&order=desc&active=1";
-        }
+            //string getDriverStats = "https://members.iracing.com/memberstats/member/GetDriverStats?search=null&friend=360858&watched=-1&recent=-1&country=null&category=2&classlow=-1&classhigh=-1&iratinglow=-1&iratinghigh=-1&ttratinglow=-1&ttratinghigh=-1&avgstartlow=-1&avgstarthigh=-1&avgfinishlow=-1&avgfinishhigh=-1&avgpointslow=-1&avgpointshigh=-1&avgincidentslow=-1&avgincidentshigh=-1&custid=360858&lowerbound=1&upperbound=25&sort=irating&order=desc&active=1";
+       // }
 
         /// <summary>
         /// Get drivers stats based on custId friends, picks data for DriverModel. Saves all driver in json file
@@ -128,6 +132,73 @@ namespace PajApp.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Get user data and stores it in json file for later use.
+        /// </summary>
+        /// <returns>data in DriverModel</returns>
+        public MemberModel GetMemberStats()
+        {
+            string getMemberStats = "https://members.iracing.com/membersite/member/GetMember";
+
+            HttpResponseMessage response = _httpClient.GetAsync(getMemberStats).Result;
+            var getResultsJson = response.Content.ReadAsStringAsync().Result;
+
+         
+            var memberResult = JsonConvert.DeserializeObject<MemberModel>(getResultsJson);
+
+            // Now its time to get owned content data and apply it into memberresult
+            var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+            var filePath = System.IO.Path.Combine(basePath, "memberContentSerialized.json");
+            
+            string ownedContent = File.ReadAllText(filePath);
+
+            var contentDeserialized = JsonConvert.DeserializeObject<List<OwnedContentListing>>(ownedContent);
+
+            memberResult.OwnedCars = new List<List<int>>();
+            memberResult.OwnedTracks = new List<List<int>>();
+
+            try
+            {
+                var numberOfContent = contentDeserialized.Count;
+
+                for (int i = 0; i < numberOfContent; i++)
+                {
+                    if (contentDeserialized[i].isrequired == 0 && contentDeserialized[i].contenttype == "c")
+                    {
+                        memberResult.OwnedCars.Add(contentDeserialized[i].ids);
+                    }
+
+                    if (contentDeserialized[i].isrequired == 0 && contentDeserialized[i].contenttype == "t")
+                    {
+                        memberResult.OwnedTracks.Add(contentDeserialized[i].ids);
+                    }
+                }
+            }
+            catch { }
+
+            string memberSerialized = JsonConvert.SerializeObject(memberResult);
+
+            try
+            {
+                basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+                filePath = System.IO.Path.Combine(basePath, "memberSerialized.json");
+
+
+                File.WriteAllText(filePath, memberSerialized);
+            }
+
+            catch
+            {
+                //UnauthorizedAccessException
+            }
+
+
+
+
+            return memberResult;
+
         }
 
     }

@@ -17,7 +17,9 @@ namespace PajApp.Views
         {
             InitializeComponent();
             DisplayAlert("DATA GATHERING", "You need to be logged in on iRacing Website to gather statistics data.", "OK");
-            
+            //WebRequestService web = new WebRequestService("", "");
+            //web.Connect();
+            //web.GetMemberStats();
 
 
         }
