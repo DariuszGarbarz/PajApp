@@ -10,8 +10,8 @@ namespace PajApp.Models
     public class MemberModel
     {
         public int Id { get; set; }
-        public List<string> OwnedCars { get; set; }
-        public List<string> OwnedTracks { get; set; }
+        public List<List<int>> OwnedCars { get; set; }
+        public List<List<int>> OwnedTracks { get; set; }
 
 
         public string readTC { get; set; }

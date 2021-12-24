@@ -145,13 +145,48 @@ namespace PajApp.Services
             HttpResponseMessage response = _httpClient.GetAsync(getMemberStats).Result;
             var getResultsJson = response.Content.ReadAsStringAsync().Result;
 
+         
+            var memberResult = JsonConvert.DeserializeObject<MemberModel>(getResultsJson);
+
+            // Now its time to get owned content data and apply it into memberresult
+            var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+            var filePath = System.IO.Path.Combine(basePath, "memberContentSerialized.json");
+            
+            string ownedContent = File.ReadAllText(filePath);
+
+            var contentDeserialized = JsonConvert.DeserializeObject<List<OwnedContentListing>>(ownedContent);
+
+            memberResult.OwnedCars = new List<List<int>>();
+            memberResult.OwnedTracks = new List<List<int>>();
+
             try
             {
-                var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
-                var filePath = System.IO.Path.Combine(basePath, "memberSerialized.json");
+                var numberOfContent = contentDeserialized.Count;
 
-        
-                File.WriteAllText(filePath, getResultsJson);
+                for (int i = 0; i < numberOfContent; i++)
+                {
+                    if (contentDeserialized[i].isrequired == 0 && contentDeserialized[i].contenttype == "c")
+                    {
+                        memberResult.OwnedCars.Add(contentDeserialized[i].ids);
+                    }
+
+                    if (contentDeserialized[i].isrequired == 0 && contentDeserialized[i].contenttype == "t")
+                    {
+                        memberResult.OwnedTracks.Add(contentDeserialized[i].ids);
+                    }
+                }
+            }
+            catch { }
+
+            string memberSerialized = JsonConvert.SerializeObject(memberResult);
+
+            try
+            {
+                basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+                filePath = System.IO.Path.Combine(basePath, "memberSerialized.json");
+
+
+                File.WriteAllText(filePath, memberSerialized);
             }
 
             catch
@@ -159,7 +194,8 @@ namespace PajApp.Services
                 //UnauthorizedAccessException
             }
 
-            var memberResult = JsonConvert.DeserializeObject<MemberModel>(getResultsJson);
+
+
 
             return memberResult;
 
