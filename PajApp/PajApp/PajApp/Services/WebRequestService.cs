@@ -201,6 +201,28 @@ namespace PajApp.Services
 
         }
 
+
+        /// <summary>
+        /// Gets all season data including all tracks, cars, weeks and requirements. Saves result in json.
+        /// </summary>
+        /// <returns>List of series in actual season with all data</returns>
+        public List<SeasonModel> GetSeasonData()
+        {
+            string getSeasonData = "https://members.iracing.com/membersite/member/GetSeasons";
+
+            HttpResponseMessage response = _httpClient.GetAsync(getSeasonData).Result;
+            var getResultsJson = response.Content.ReadAsStringAsync().Result;
+
+            var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+            var filePath = System.IO.Path.Combine(basePath, "seasonDataSerialized.json");
+
+
+            File.WriteAllText(filePath, getResultsJson);
+
+            var seasonResult = JsonConvert.DeserializeObject<List<SeasonModel>>(getResultsJson);
+
+            return seasonResult;
+        }
     }
 
 }
