@@ -27,6 +27,35 @@ namespace PajApp.Services
             return driversDeserialized;
         }
 
-      
+        /// <summary>
+        /// Loads all data of the current user of the app together with all content owned
+        /// </summary>
+        /// <returns>Member model</returns>
+        public static MemberModel LoadMember()
+        {
+            var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+            var filePath = System.IO.Path.Combine(basePath, "memberSerialized.json");
+
+            string member = File.ReadAllText(filePath);
+            MemberModel memberDeserialized = JsonConvert.DeserializeObject<MemberModel>(member);
+
+            return memberDeserialized;
+        }
+
+        /// <summary>
+        /// Loads all of Season Data with weeks, tracks and cars ect.
+        /// </summary>
+        /// <returns>List of Season Series</returns>
+        public static List<SeasonModel> LoadSeason()
+        {
+            var basePath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyVideos);
+            var filePath = System.IO.Path.Combine(basePath, "seasonDataSerialized.json");
+
+            string season = File.ReadAllText(filePath);
+            List<SeasonModel> seasonDeserialized = JsonConvert.DeserializeObject<List<SeasonModel>>(season);
+
+            return seasonDeserialized;
+        }
+
     }
 }
